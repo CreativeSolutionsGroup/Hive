@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SocialType {
+  Instagram
+  Tiktok
+  Facebook
+  Twitter
+}
+
+model Social {
+  id        String     @id @default(cuid())
+  type      SocialType
+  href      String
+  student   Student    @relation(fields: [studentId], references: [id])
+  studentId String
+}
+
+model Student {
+  id           String     @id @default(cuid())
+  name         String
+  group        StingGroup @relation(fields: [stingGroupId], references: [id])
+  stingGroupId String
+  socialMedia  Social[]
+}
+
+model StingGroup {
+  id       String    @id @default(cuid())
+  students Student[]
+}
