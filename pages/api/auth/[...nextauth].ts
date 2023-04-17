@@ -17,6 +17,9 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     })
   ],
+  session: {
+    strategy: "jwt"
+  },
   callbacks: {
     async signIn({ user: { email }}) {
       return !!prisma.user.count({

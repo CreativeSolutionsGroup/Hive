@@ -4,19 +4,16 @@ import Head from 'next/head'
 import useSWRInfinite from 'swr/infinite'
 import { User } from '@prisma/client'
 
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: "/profile",
+      permanent: true
+    }
+  }
+}
+
 export default function Home() {
-  const { data: userPages, size, setSize, isLoading } = useSWRInfinite<Array<User>>((index, previous) => {
-    if (previous && !previous.length) return null;
-
-    if (index === 0) return `/api/user?page=0`
-
-    return `/api/user?page=${index + 1}`
-  }, async url => await fetch(url).then(f => f.json()), { parallel: true })
-
-  if (isLoading || userPages == null) return "Loading...";
-
-  const len = userPages.reduce((a, c) => a + c.length, 0);
-
   return (
     <>
       <Head>
@@ -25,23 +22,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {userPages.length > 0 ? userPages.map((users, i) => (
-        users && users.map(user => (
-          <Link key={user.id} href={`/sting/${user.stingGroupId}`}>
-            <Card sx={{ mb: 3 }}>
-              <CardContent sx={{ display: "flex" }}>
-                <Box flex="1">
-                  <Typography>{user.name}</Typography>
-                </Box>
-                <Box flex="1">
-                  <Typography>Sting Group {user.stingGroupId}</Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          </Link>
-        ))
-      )) : <Typography>Nothing found here...</Typography>}
-      <Button onClick={() => setSize(size + 1)}>Load More</Button>
+      <Typography>Hive</Typography>
     </>
   )
 }
