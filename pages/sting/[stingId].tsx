@@ -1,5 +1,5 @@
 import { testSting } from "@/lib/data";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
 import { GetServerSidePropsContext, GetServerSidePropsResult, InferGetServerSidePropsType } from "next";
 import prisma from "@/lib/prisma";
@@ -13,7 +13,7 @@ export async function getServerSideProps({ query, res }: GetServerSidePropsConte
       id: stingId
     },
     include: {
-      students: true
+      users: true
     }
   });
   if (stingGroup == null) return { redirect: { destination: "/", permanent: false } }
@@ -28,16 +28,18 @@ export async function getServerSideProps({ query, res }: GetServerSidePropsConte
 export default function Sting({ stingGroup }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
-      <Typography>{stingGroup.id}</Typography>
-      {stingGroup.students.map((m, i) => (
-        <Link key={i} href={`/student/${m.id}`}>
-          <Card sx={{ mb: 1 }}>
-            <CardContent>
-              <Typography>{m.name}</Typography>
-            </CardContent>
-          </Card>
-        </Link>
-      ))}
+      <Typography variant="h3" component="h1">{stingGroup.id}</Typography>
+      <Box mt={3}>
+        {stingGroup.users.map((m, i) => (
+          <Link key={i} href={`/student/${m.id}`}>
+            <Card sx={{ mb: 1 }}>
+              <CardContent>
+                <Typography>{m.name}</Typography>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </Box>
     </>
   )
 }

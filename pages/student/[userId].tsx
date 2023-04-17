@@ -3,32 +3,32 @@ import { Box, Card, CardContent, Link, Typography } from "@mui/material";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
 
 export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  const { studentId } = query as { studentId: string };
-  if (studentId == null) return { redirect: { destination: "/", permanent: false } }
-  const student = await prisma.student.findUnique({
+  const { userId } = query as { userId: string };
+  if (userId == null) return { redirect: { destination: "/", permanent: false } }
+  const user = await prisma.user.findUnique({
     where: {
-      id: studentId
+      id: userId
     },
     include: {
       socialMedia: true
     }
   });
-  if (student == null) return { redirect: { destination: "/", permanent: false } }
+  if (user == null) return { redirect: { destination: "/", permanent: false } }
 
   return {
     props: {
-      student
+      user
     }
   }
 }
 
-export default function User({ student }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function User({ user }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Card>
         <CardContent>
-          <Typography>{student.name}</Typography>
-          {student.socialMedia.map(social => (
+          <Typography variant="h3" component="h1">{user.name}</Typography>
+          {user.socialMedia.map(social => (
             <Box key={social.id}>
               <Typography>
                 <Link href={social.href}>{social.type}</Link>
