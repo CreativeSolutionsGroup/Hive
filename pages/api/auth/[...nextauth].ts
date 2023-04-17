@@ -27,6 +27,9 @@ export const authOptions: AuthOptions = {
           email
         }
       })
+    },
+    async redirect({ baseUrl, url }) {
+      return "/profile"
     }
   }
 }
