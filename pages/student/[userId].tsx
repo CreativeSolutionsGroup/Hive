@@ -1,28 +1,36 @@
 import prisma from "@/lib/prisma";
+import { getStudent } from "@/lib/users";
 import { Box, Card, CardContent, Link, Typography } from "@mui/material";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next"
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
-export async function getServerSideProps({ query }: GetServerSidePropsContext) {
-  const { userId } = query as { userId: string };
-  if (userId == null) return { redirect: { destination: "/", permanent: false } }
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId
-    },
-    include: {
-      socialMedia: true
-    }
-  });
-  if (user == null) return { redirect: { destination: "/", permanent: false } }
+export async function getStaticPaths() {
+  const students = await prisma.user.findMany();
 
   return {
-    props: {
-      user
-    }
+    paths: students.map(s => ({
+      params: {
+        userId: s.id
+      }
+    })),
+    fallback: true
   }
 }
 
-export default function User({ user }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  if (!params) throw new Error("No path parameters found");
+  const user = await getStudent(params.userId as string ?? "");
+
+  if (!user) return { notFound: true, revalidate: 10 };
+
+  return {
+    props: { user },
+    revalidate: 60
+  }
+}
+
+export default function User({ user }: InferGetStaticPropsType<typeof getStaticProps>) {
+  if (!user) return (<></>);
+  
   return (
     <>
       <Card>

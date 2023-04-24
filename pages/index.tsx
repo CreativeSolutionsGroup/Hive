@@ -1,17 +1,5 @@
-import { Box, Button, Card, CardActionArea, CardContent, CardHeader, Typography } from '@mui/material'
-import Link from "next/link"
+import { Typography } from '@mui/material'
 import Head from 'next/head'
-import useSWRInfinite from 'swr/infinite'
-import { User } from '@prisma/client'
-
-export async function getServerSideProps() {
-  return {
-    redirect: {
-      destination: "/profile",
-      permanent: true
-    }
-  }
-}
 
 export default function Home() {
   return (

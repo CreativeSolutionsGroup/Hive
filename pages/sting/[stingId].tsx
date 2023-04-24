@@ -1,36 +1,42 @@
 import { testSting } from "@/lib/data";
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
-import { GetServerSidePropsContext, GetServerSidePropsResult, InferGetServerSidePropsType } from "next";
+import { GetServerSidePropsContext, GetServerSidePropsResult, GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import prisma from "@/lib/prisma";
 import { StingGroup } from "@prisma/client";
+import { getStingGroup } from "@/lib/groups";
 
-export async function getServerSideProps({ query, res }: GetServerSidePropsContext) {
-  const { stingId } = query as { stingId: string };
-  if (stingId == null) return { redirect: { destination: "/", permanent: false } }
-  const stingGroup = await prisma.stingGroup.findUnique({
-    where: {
-      id: stingId
-    },
-    include: {
-      users: true
-    }
-  });
-  if (stingGroup == null) return { redirect: { destination: "/", permanent: false } }
+export async function getStaticPaths() {
+  const groups = await prisma.stingGroup.findMany();
 
   return {
-    props: {
-      stingGroup
-    }
+    paths: groups.map(g => ({
+      params: {
+        stingId: g.id
+      }
+    })),
+    fallback: true
   }
 }
 
-export default function Sting({ stingGroup }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  if (!params) throw new Error("No path parameters found");
+  const stingGroup = await getStingGroup(params.stingId as string ?? "");
+
+  if (!stingGroup) return { notFound: true, revalidate: 10 };
+
+  return {
+    props: { stingGroup },
+    revalidate: 60
+  };
+}
+
+export default function Sting({ stingGroup }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <Typography variant="h3" component="h1">{stingGroup.id}</Typography>
+      <Typography variant="h3" component="h1">{stingGroup?.id}</Typography>
       <Box mt={3}>
-        {stingGroup.users.map((m, i) => (
+        {stingGroup?.users.map((m, i) => (
           <Link key={i} href={`/student/${m.id}`}>
             <Card sx={{ mb: 1 }}>
               <CardContent>
