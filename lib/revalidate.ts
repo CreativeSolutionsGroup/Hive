@@ -1,10 +1,10 @@
 /**
  * Revalidates a user's profile page using Next ISR
  * @param hostname The host to revalidate
- * @param id The user ID to revalidate
+ * @param studentId The user ID to revalidate
  */
-export async function revalidate(hostname: string, id: string) {
-  const urlPaths = [`/student/${id}`];
+export async function revalidate(hostname: string, studentId: string, groupId: string) {
+  const urlPaths = [`/student/${studentId}`, `/sting/${groupId}`];
 
   
   await Promise.all(urlPaths.map((urlPath) =>
