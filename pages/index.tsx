@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material'
-import Head from 'next/head'
+import { Typography } from "@mui/material";
+import Head from "next/head";
 
 export default function Home() {
   return (
@@ -12,5 +12,5 @@ export default function Home() {
       </Head>
       <Typography>Hive</Typography>
     </>
-  )
+  );
 }

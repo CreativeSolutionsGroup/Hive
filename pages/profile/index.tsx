@@ -1,6 +1,6 @@
 import { Alert, Button, Card, CardContent, Snackbar, TextField, Typography } from "@mui/material";
 import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { getServerSession } from "next-auth/next"
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
@@ -8,7 +8,9 @@ import { Social, SocialType } from "@prisma/client";
 import { useState } from "react";
 
 export async function getServerSideProps({ req, res }: GetServerSidePropsContext) {
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getServerSession(
+    req, res, authOptions
+  );
   const user = await prisma.user.findUnique({
     where: {
       email: session!.user!.email!
@@ -23,7 +25,7 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
     props: {
       user
     }
-  }
+  };
 }
 
 function SocialSetting({ social, onChange }: { social: Social, onChange: (_: string) => void }) {
@@ -32,7 +34,7 @@ function SocialSetting({ social, onChange }: { social: Social, onChange: (_: str
       <Typography>{social.type}</Typography>
       <TextField onChange={e => onChange(e.target.value)} />
     </>
-  )
+  );
 }
 
 export default function Profile({ user }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -64,7 +66,7 @@ export default function Profile({ user }: InferGetServerSidePropsType<typeof get
    * @param s The href of the social media
    */
   async function updateSocial(i: number, s: string) {
-    const updated = { ...socials[i], href: s } as Social
+    const updated = { ...socials[i], href: s } as Social;
     setSocials(l => [...l.slice(0, i), updated, ...l.slice(i + 1)]);
   }
 
@@ -91,5 +93,5 @@ export default function Profile({ user }: InferGetServerSidePropsType<typeof get
         </Alert>
       </Snackbar>
     </>
-  )
+  );
 }

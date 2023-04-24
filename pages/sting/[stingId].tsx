@@ -16,7 +16,7 @@ export async function getStaticPaths() {
       }
     })),
     fallback: true
-  }
+  };
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
@@ -47,5 +47,5 @@ export default function Sting({ stingGroup }: InferGetStaticPropsType<typeof get
         ))}
       </Box>
     </>
-  )
+  );
 }

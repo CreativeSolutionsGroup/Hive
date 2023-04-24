@@ -13,7 +13,7 @@ export async function getStaticPaths() {
       }
     })),
     fallback: true
-  }
+  };
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
@@ -25,7 +25,7 @@ export async function getStaticProps({ params }: GetStaticPropsContext) {
   return {
     props: { user },
     revalidate: 60
-  }
+  };
 }
 
 export default function User({ user }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -46,5 +46,5 @@ export default function User({ user }: InferGetStaticPropsType<typeof getStaticP
         </CardContent>
       </Card>
     </>
-  )
+  );
 }

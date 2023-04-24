@@ -3,7 +3,9 @@
  * @param hostname The host to revalidate
  * @param studentId The user ID to revalidate
  */
-export async function revalidate(hostname: string, studentId: string, groupId: string) {
+export async function revalidate(
+  hostname: string, studentId: string, groupId: string
+) {
   const urlPaths = [`/student/${studentId}`, `/sting/${groupId}`];
 
   
@@ -16,6 +18,5 @@ export async function revalidate(hostname: string, studentId: string, groupId: s
       body: JSON.stringify({
         urlPath,
       })
-    })
-  ));
+    })));
 }

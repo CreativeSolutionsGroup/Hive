@@ -1,4 +1,4 @@
-import prisma from "../prisma"
+import prisma from "../prisma";
 
 export const getStudent = async (id: string) => {
   return prisma.user.findUnique({
@@ -8,5 +8,5 @@ export const getStudent = async (id: string) => {
     include: {
       socialMedia: true
     }
-  })
-}
+  });
+};

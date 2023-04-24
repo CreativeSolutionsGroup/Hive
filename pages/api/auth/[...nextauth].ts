@@ -1,7 +1,7 @@
-import NextAuth, { AuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
+import NextAuth, { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import { exit } from "process";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 
 if (
@@ -26,11 +26,11 @@ export const authOptions: AuthOptions = {
         where: {
           email
         }
-      })
+      });
     },
     async redirect({ baseUrl, url }) {
-      return "/profile"
+      return "/profile";
     }
   }
-}
-export default NextAuth(authOptions)
+};
+export default NextAuth(authOptions);

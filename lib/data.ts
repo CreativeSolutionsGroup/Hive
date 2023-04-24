@@ -21,7 +21,7 @@ export const testUsers = [
     ],
     stingId: 2
   }
-]
+];
 
 export const testSting = [
   {
@@ -32,4 +32,4 @@ export const testSting = [
     stingNumber: 2,
     members: testUsers
   }
-]
+];

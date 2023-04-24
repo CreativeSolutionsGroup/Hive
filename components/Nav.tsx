@@ -11,5 +11,5 @@ export default function Nav() {
         </Box>
       </Toolbar>
     </AppBar>
-  )
+  );
 }
