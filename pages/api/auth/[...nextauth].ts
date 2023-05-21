@@ -9,6 +9,20 @@ if (
   process.env.GOOGLE_CLIENT_SECRET == null
 ) exit(1);
 
+declare module "next-auth" {
+  interface Session {
+    groupId: string;
+    accessibleUsers: Array<string>;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    groupId: string;
+    accessibleUsers: Array<string>;
+  }
+}
+
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -21,15 +35,31 @@ export const authOptions: AuthOptions = {
     strategy: "jwt"
   },
   callbacks: {
-    async signIn({ user: { email }}) {
+    async signIn({ user: { email } }) {
       return !!prisma.user.count({
         where: {
           email
         }
-      })
+      });
     },
     async redirect({ baseUrl, url }) {
-      return "/profile"
+      return "/profile";
+    },
+    async jwt({ token, user }) {
+      const member = await prisma.user.findFirst({ where: { email: token.email }, include: { group: { include: { users: true } } } });
+
+      token.groupId = member?.stingGroupId ?? "";
+
+      token.accessibleUsers = member?.group?.users.map((u) => u.id) ?? [];
+
+      return token;
+    },
+    async session({ session, token }) {
+      session.groupId = token.groupId;
+
+      session.accessibleUsers = token.accessibleUsers;
+
+      return session;
     }
   }
 }
