@@ -8,6 +8,8 @@ import {
   Snackbar,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   GetServerSideProps,
@@ -20,6 +22,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Social, SocialType } from "@prisma/client";
 import { useEffect, useState } from "react";
+import UserCard from "@/components/UserCard";
 
 export async function getServerSideProps({
   req,
@@ -36,7 +39,7 @@ export async function getServerSideProps({
   });
   if (user == null) return { redirect: { destination: "/", permanent: false } };
 
-  if (!user.redwoodId) {
+  if (!user.stingGroupId) {
     const userMetadata = await prisma.studentMetadata.findFirst({
       where: { email: user.email ?? "" },
     });
@@ -48,7 +51,6 @@ export async function getServerSideProps({
         user: await prisma.user.update({
           where: { id: user.id },
           data: {
-            redwoodId: userMetadata.redwoodId,
             group: {
               connect: {
                 // We assume that sting group ID is not null for any of the students
@@ -148,38 +150,59 @@ export default function Profile({
   }
 
   return (
-    <>
-      <Typography>Edit Profile</Typography>
-      <Button LinkComponent={Link} href={`/sting/${user.stingGroupId}`}>
-        Go to Sting Group
-      </Button>
-      <Card>
-        <CardContent>
-          <Typography>User Data</Typography>
-          <TextField value={user?.name} disabled />
-        </CardContent>
-      </Card>
-      <Card sx={{ padding: "1rem" }}>
+    <Box
+      sx={{
+        width: {
+          xs: "90%",
+          sm: "60%",
+          md: "40%",
+          lg: "20%",
+        },
+      }}
+    >
+      <Typography variant="subtitle1" fontWeight={700}>
+        Profile for {user.name}
+      </Typography>
+      <UserCard user={user} />
+      <Card
+        sx={{
+          padding: "1rem",
+        }}
+      >
         <Box display={"flex"} flexDirection={"column"}>
-          <Typography variant="h5" mb={1}>
+          <Typography variant="h6" mb={1}>
             Social Media
           </Typography>
-          {socials.map((v, i) => (
-            <TextField
-              key={i}
-              label={`${v.type} Profile URL`}
-              helperText={!valid[i] ? "Invalid URL" : ""}
-              error={!valid[i]}
-              value={v.href}
-              onChange={(e) => updateSocial(i, e.target.value)}
-              sx={{ width: "300px", margin: 1 }}
-            />
-          ))}
-          <Button onClick={saveUserSocials} sx={{ width: "300px", margin: 1 }}>
-            Save
-          </Button>
+          <Box display={"flex"} flexDirection={"column"}>
+            {socials.map((v, i) => (
+              <TextField
+                key={i}
+                label={`${v.type} Profile URL`}
+                helperText={!valid[i] ? "Invalid URL" : ""}
+                error={!valid[i]}
+                value={v.href}
+                onChange={(e) => updateSocial(i, e.target.value)}
+                sx={{ margin: 1 }}
+              />
+            ))}
+            <Button
+              onClick={saveUserSocials}
+              sx={{ width: "150px", margin: 1, marginLeft: "auto" }}
+              variant="contained"
+            >
+              Save
+            </Button>
+          </Box>
         </Box>
       </Card>
+      <Button
+        LinkComponent={Link}
+        href={`/sting/${user.stingGroupId}`}
+        variant="contained"
+        sx={{ marginTop: 2 }}
+      >
+        Go to Sting Group
+      </Button>
 
       <Snackbar
         open={success}
@@ -194,6 +217,6 @@ export default function Profile({
           Successfully Saved
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }

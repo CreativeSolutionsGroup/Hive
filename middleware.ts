@@ -8,8 +8,13 @@ export default withAuth(
     const url = req.nextUrl;
 
     if (req.url.match("http[s]?://.*/$")) {
-      url.pathname = `/sting/${req.nextauth.token?.groupId}`;
-      return NextResponse.redirect(url);
+      if (!req.nextauth.token?.groupId) {
+        url.pathname = "/profile";
+        return NextResponse.redirect(url);
+      } else {
+        url.pathname = `/sting/${req.nextauth.token?.groupId}`;
+        return NextResponse.redirect(url);
+      }
     }
 
     if (req.url.match("http[s]?://.*/sting/.*$")) {
