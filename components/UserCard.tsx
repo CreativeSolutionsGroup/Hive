@@ -5,66 +5,107 @@ import facebook from "@/assets/facebook.png";
 import instagram from "@/assets/instagram.png";
 import twitter from "@/assets/twitter.png";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
+  const [socials] = useState(
+    user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))
+  );
+
   return (
-    <Card sx={{ marginBottom: 2, backgroundColor: "#eee" }}>
-      <CardContent sx={{ display: "flex" }}>
-        <Link
-          href={`/student/${user.id}`}
-          style={{
+    <Card
+      sx={{
+        marginBottom: 2,
+        backgroundColor: "#eee",
+        paddingX: 2,
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          width: {
+            xs: "90vw",
+            sm: "60vw",
+            md: "40vw",
+            lg: "20vw",
+          },
+        }}
+      >
+        <Typography
+          variant="subtitle1"
+          sx={{
             textDecoration: "none",
-            marginLeft: 2,
-            marginRight: 2,
-            marginTop: "auto",
-            marginBottom: "auto",
+            marginX: 2,
+            marginY: "auto",
             color: "black",
+            flexGrow: 1,
+            flexBasis: 0,
           }}
         >
-          <Typography variant="subtitle1">
-            {user.name}
-          </Typography>
-        </Link>
-        {user.socialMedia.map((social) => (
-          <Box
-            key={social.id}
-            my={"auto"}
-            mx={2}
-            sx={{
-              filter: social.href === "" ? "grayscale(100%)" : "",
-            }}
-          >
-            <Link
-              href={
-                social.href.includes("http")
-                  ? social.href
-                  : `https://${social.href}`
-              }
-              style={{
-                marginLeft: 2,
-                marginRight: 2,
-              }}
-            >
-              <Avatar sx={{ backgroundColor: "#0000", overflow: "visible" }}>
-                <Image
-                  alt="social logo"
-                  src={
-                    social.type === "Facebook"
-                      ? facebook.src
-                      : social.type === "Instagram"
-                      ? instagram.src
-                      : twitter.src
-                  }
-                  fill
-                  style={{
-                    objectFit: "contain",
-                  }}
-                />
+          {user.name}
+        </Typography>
+        <Box
+          flexGrow={1}
+          flexBasis={0}
+          display={"flex"}
+          flexDirection={"row-reverse"}
+          marginRight={3}
+        >
+          {socials.map((social, i) =>
+            social.href.length === 0 ? (
+              <Avatar
+                sx={{
+                  backgroundColor: "#0000",
+                  marginX: 2,
+                  width: "25px",
+                  height: "25px",
+                }}
+                key={social.id}
+              >
+                <Box></Box>
               </Avatar>
-            </Link>
-          </Box>
-        ))}
-      </CardContent>
+            ) : (
+              <Box key={social.id} my={"auto"} mx={2}>
+                <Link
+                  href={
+                    social.href.includes("http")
+                      ? social.href
+                      : `https://${social.href}`
+                  }
+                  style={{
+                    marginLeft: 2,
+                    marginRight: 2,
+                  }}
+                >
+                  <Avatar
+                    sx={{
+                      backgroundColor: "#0000",
+                      overflow: "visible",
+                      width: "25px",
+                      height: "25px",
+                    }}
+                  >
+                    <Image
+                      alt="social logo"
+                      src={
+                        social.type === "Facebook"
+                          ? facebook.src
+                          : social.type === "Instagram"
+                          ? instagram.src
+                          : twitter.src
+                      }
+                      fill
+                      style={{
+                        objectFit: "contain",
+                      }}
+                    />
+                  </Avatar>
+                </Link>
+              </Box>
+            )
+          )}
+        </Box>
+      </Box>
     </Card>
   );
 }

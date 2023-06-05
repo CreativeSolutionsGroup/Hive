@@ -1,28 +1,24 @@
+import UserCard from "@/components/UserCard";
+import prisma from "@/lib/prisma";
+import HelpIcon from "@mui/icons-material/Help";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Alert,
   Box,
   Button,
   Card,
-  CardContent,
-  Grid,
+  IconButton,
+  Modal,
   Snackbar,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]";
-import prisma from "@/lib/prisma";
-import Link from "next/link";
 import { Social, SocialType } from "@prisma/client";
-import { useEffect, useState } from "react";
-import UserCard from "@/components/UserCard";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { getServerSession } from "next-auth/next";
+import Link from "next/link";
+import { useState } from "react";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 export async function getServerSideProps({
   req,
@@ -88,6 +84,9 @@ export default function Profile({
   const [socials, setSocials] = useState(user.socialMedia);
   const [valid, setValid] = useState(user.socialMedia.map(() => true));
   const [success, setSuccess] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const handleClose = () => setHelpOpen(false);
+  const handleOpen = () => setHelpOpen(true);
 
   /**
    * Loops through each social media and saves it.
@@ -150,73 +149,130 @@ export default function Profile({
   }
 
   return (
-    <Box
-      sx={{
-        width: {
-          xs: "90%",
-          sm: "60%",
-          md: "40%",
-          lg: "20%",
-        },
-      }}
-    >
-      <Typography variant="subtitle1" fontWeight={700}>
-        Profile for {user.name}
-      </Typography>
-      <UserCard user={user} />
-      <Card
-        sx={{
-          padding: "1rem",
-        }}
-      >
-        <Box display={"flex"} flexDirection={"column"}>
-          <Typography variant="h6" mb={1}>
-            Social Media
-          </Typography>
-          <Box display={"flex"} flexDirection={"column"}>
-            {socials.map((v, i) => (
-              <TextField
-                key={i}
-                label={`${v.type} Profile URL`}
-                helperText={!valid[i] ? "Invalid URL" : ""}
-                error={!valid[i]}
-                value={v.href}
-                onChange={(e) => updateSocial(i, e.target.value)}
-                sx={{ margin: 1 }}
-              />
-            ))}
-            <Button
-              onClick={saveUserSocials}
-              sx={{ width: "150px", margin: 1, marginLeft: "auto" }}
-              variant="contained"
-            >
-              Save
-            </Button>
+    <>
+      <Modal open={helpOpen} onClose={handleClose}>
+        <Box display={"flex"} height={"100%"}>
+          <Box
+            display={"flex"}
+            flexDirection={"column"}
+            sx={{ backgroundColor: "white" }}
+            marginX={"auto"}
+            marginY={"auto"}
+            borderRadius={"10px"}
+            minWidth={"400px"}
+          >
+            <Box display={"flex"}>
+              <Typography variant="h6" margin={2} flexGrow={1}>
+                Getting Social Links
+              </Typography>
+              <IconButton
+                sx={{
+                  width: "35px",
+                  height: "35px",
+                  marginY: "auto",
+                  marginRight: 1,
+                }}
+                onClick={handleClose}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Box borderTop={"2px solid darkgray"} marginX={1} paddingBottom={3}>
+              <Typography marginX={1} marginTop={2}>
+                Instructions go here...
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Card>
-      <Button
-        LinkComponent={Link}
-        href={`/sting/${user.stingGroupId}`}
-        variant="contained"
-        sx={{ marginTop: 2 }}
+      </Modal>
+      <Box
+        sx={{
+          width: {
+            xs: "90vw",
+            sm: "60vw",
+            md: "40vw",
+            lg: "20vw",
+          },
+          position: "relative",
+        }}
       >
-        Go to Sting Group
-      </Button>
-
-      <Snackbar
-        open={success}
-        autoHideDuration={4000}
-        onClose={() => setSuccess(false)}
-      >
-        <Alert
-          onClose={() => setSuccess(false)}
-          severity="success"
-          sx={{ wdith: "100%" }}
+        <Typography variant="subtitle1" fontWeight={700}>
+          Profile for {user.name}
+        </Typography>
+        <UserCard user={user} />
+        <Card
+          sx={{
+            padding: "1rem",
+          }}
         >
-          Successfully Saved
-        </Alert>
-      </Snackbar>
-    </Box>
+          <Box display={"flex"} flexDirection={"column"}>
+            <Typography variant="h6" mb={1}>
+              Social Media
+            </Typography>
+            <Box display={"flex"} flexDirection={"column"}>
+              {socials.map((v, i) => (
+                <TextField
+                  key={i}
+                  label={`${v.type} Profile URL`}
+                  helperText={!valid[i] ? "Invalid URL" : ""}
+                  error={!valid[i]}
+                  value={v.href}
+                  onChange={(e) => updateSocial(i, e.target.value)}
+                  sx={{ margin: 1 }}
+                />
+              ))}
+              <Button
+                onClick={saveUserSocials}
+                sx={{ width: "150px", margin: 1, marginLeft: "auto" }}
+                variant="contained"
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Card>
+        <Button
+          LinkComponent={Link}
+          href={`/sting/${user.stingGroupId}`}
+          variant="contained"
+          sx={{ marginTop: 2 }}
+        >
+          Go to Sting Group
+        </Button>
+
+        <Snackbar
+          open={success}
+          autoHideDuration={4000}
+          onClose={() => setSuccess(false)}
+        >
+          <Alert
+            onClose={() => setSuccess(false)}
+            severity="success"
+            sx={{ wdith: "100%" }}
+          >
+            Successfully Saved
+          </Alert>
+        </Snackbar>
+        <IconButton
+          sx={{
+            position: "absolute",
+            right: "0px",
+            bottom: "-10px",
+          }}
+          onClick={handleOpen}
+        >
+          <HelpIcon
+            sx={{
+              backgroundColor: "#fdb813",
+              borderRadius: "50%",
+              color: "#003865",
+              width: "40px",
+              height: "40px",
+              boxShadow: 3,
+            }}
+          />
+        </IconButton>
+      </Box>
+    </>
   );
 }

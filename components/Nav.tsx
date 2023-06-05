@@ -9,6 +9,7 @@ import {
   MenuItem,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
@@ -24,6 +25,7 @@ export default function Nav() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const theme = useTheme();
 
   const { data: session } = useSession();
 
@@ -33,7 +35,7 @@ export default function Nav() {
     <AppBar>
       <Toolbar sx={{ height: "2rem" }}>
         <Link href={"/"} style={{ textDecoration: "none" }}>
-          <Typography variant="h4" sx={{ color: "white" }}>
+          <Typography variant="h4" sx={{ color: theme.palette.secondary.main }}>
             Hive
           </Typography>
         </Link>
