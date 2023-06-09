@@ -6,11 +6,15 @@ import instagram from "@/assets/instagram.png";
 import twitter from "@/assets/twitter.png";
 import Image from "next/image";
 import { useState } from "react";
+import useUserSocials from "@/hooks/useUserSocials";
+import { useSession } from "next-auth/react";
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
-  const [socials] = useState(
-    user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))
-  );
+  const { data: session } = useSession();
+  const [socials] =
+    session?.user && session.user.email == user.email
+      ? useUserSocials(user.socialMedia)
+      : [user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))];
 
   return (
     <Card
@@ -18,17 +22,15 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
         marginBottom: 2,
         backgroundColor: "#eee",
         paddingX: 2,
+        width: {
+          xs: "90%",
+          sm: "400px",
+        },
       }}
     >
       <Box
         sx={{
           display: "flex",
-          width: {
-            xs: "90vw",
-            sm: "60vw",
-            md: "40vw",
-            lg: "20vw",
-          },
         }}
       >
         <Typography

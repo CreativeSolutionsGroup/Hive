@@ -1,4 +1,5 @@
 import RootLayout from "@/components/RootLayout";
+import { UserSocialProvider } from "@/contexts/UserSocialContext";
 import "@/styles/globals.css";
 import { ThemeProvider, createTheme } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -34,10 +35,12 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RootLayout>
-          <Component {...pageProps} />
-        </RootLayout>
+        <UserSocialProvider>
+          <CssBaseline />
+          <RootLayout>
+            <Component {...pageProps} />
+          </RootLayout>
+        </UserSocialProvider>
       </ThemeProvider>
     </SessionProvider>
   );

@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import honeycomb from "@/assets/honeycomb.png";
 
 export default function Nav() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -34,8 +35,14 @@ export default function Nav() {
   return (
     <AppBar>
       <Toolbar sx={{ height: "2rem" }}>
+        <Image
+          alt="honeycomb design"
+          src={honeycomb.src}
+          fill
+          style={{ objectFit: "contain", objectPosition: "0% 50%", zIndex: -1 }}
+        />
         <Link href={"/"} style={{ textDecoration: "none" }}>
-          <Typography variant="h4" sx={{ color: theme.palette.secondary.main }}>
+          <Typography variant="h4" sx={{ color: "#fcb716" }} fontWeight={800}>
             Hive
           </Typography>
         </Link>

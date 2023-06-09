@@ -19,6 +19,7 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useState } from "react";
 import { authOptions } from "../api/auth/[...nextauth]";
+import useUserSocials from "@/hooks/useUserSocials";
 
 export async function getServerSideProps({
   req,
@@ -81,7 +82,7 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [socials, setSocials] = useState(user.socialMedia);
+  const [socials, setSocial] = useUserSocials(user.socialMedia);
   const [valid, setValid] = useState(user.socialMedia.map(() => true));
   const [success, setSuccess] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -96,14 +97,15 @@ export default function Profile({
     try {
       await Promise.all(
         socials.map(
-          async (s) =>
-            await fetch(`/api/social/${s.id}`, {
+          async (s, i) =>
+            valid[i] &&
+            (await fetch(`/api/social/${s.id}`, {
               method: "PUT",
               body: JSON.stringify(s),
               headers: {
                 "content-type": "application/json",
               },
-            })
+            }))
         )
       );
       setSuccess(true);
@@ -119,29 +121,25 @@ export default function Profile({
    */
   async function updateSocial(i: number, s: string) {
     const updated = { ...socials[i], href: s } as Social;
+    let socialValid = false;
     if (updated.type === "Twitter") {
-      updateValid(
-        i,
-        !!s.match(
-          "^([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Tt][Ww][Ii][Tt]{2}[Ee][Rr])\\.com\\/(?!([Tt][Ww][Ii][Tt]{2}[Ee][Rr])|[Aa][Dd][Mm][Ii][Nn])[a-zA-Z0-9_]{4,15}$"
-        )
+      socialValid = !!s.match(
+        "^(([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Tt][Ww][Ii][Tt]{2}[Ee][Rr])\\.com\\/(?!([Tt][Ww][Ii][Tt]{2}[Ee][Rr])|[Aa][Dd][Mm][Ii][Nn])[a-zA-Z0-9_]{4,15}){0,1}$"
       );
+      updateValid(i, socialValid);
     } else if (updated.type === "Facebook") {
-      updateValid(
-        i,
-        !!s.match(
-          "^([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Ff][Aa][Cc][Ee][Bb][Oo]{2}[Kk])\\.com\\/profile\\.php\\?id=[0-9]+$"
-        )
+      socialValid = !!s.match(
+        "^(([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Ff][Aa][Cc][Ee][Bb][Oo]{2}[Kk])\\.com\\/profile\\.php\\?id=[0-9]+){0,1}$"
       );
+      updateValid(i, socialValid);
     } else {
-      updateValid(
-        i,
-        !!s.match(
-          "^([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Ii][Nn][Ss][Tt][Aa][Gg][Rr][Aa][Mm])\\.com\\/[a-zA-Z0-9\\.]{1,30}$"
-        )
+      socialValid = !!s.match(
+        "^(([Hh][Tt]{2}[Pp][Ss]?:\\/\\/)?([Ww]{3}\\.)?([Ii][Nn][Ss][Tt][Aa][Gg][Rr][Aa][Mm])\\.com\\/[a-zA-Z0-9\\.]{1,30}){0,1}$"
       );
+      updateValid(i, socialValid);
     }
-    setSocials((l) => [...l.slice(0, i), updated, ...l.slice(i + 1)]);
+
+    setSocial(updated, i);
   }
 
   function updateValid(i: number, b: boolean) {
@@ -187,12 +185,7 @@ export default function Profile({
       </Modal>
       <Box
         sx={{
-          width: {
-            xs: "90vw",
-            sm: "60vw",
-            md: "40vw",
-            lg: "20vw",
-          },
+          width: { xs: "90%", sm: "400px" },
           position: "relative",
         }}
       >
