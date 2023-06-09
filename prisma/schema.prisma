@@ -43,6 +43,7 @@ model Session {
 
 model User {
   id            String      @id @default(cuid())
+  redwoodId     String?
   name          String?
   email         String?     @unique
   emailVerified DateTime?
@@ -52,6 +53,13 @@ model User {
   sessions      Session[]
   socialMedia   Social[]
   group         StingGroup? @relation(fields: [stingGroupId], references: [id])
+}
+
+model StudentMetadata {
+  id           String  @id @default(cuid())
+  redwoodId    String
+  email        String
+  stingGroupId String?
 }
 
 model VerificationToken {
