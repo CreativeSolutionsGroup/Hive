@@ -42,18 +42,12 @@ export default function Sting({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <Typography variant="h3" component="h1">
+      <Typography variant="h4" component="h1">
         {stingGroup?.id}
       </Typography>
       <Box mt={3}>
         {stingGroup?.users.map((m, i) => (
-          <Link
-            key={i}
-            href={`/student/${m.id}`}
-            style={{ textDecoration: "none" }}
-          >
-            <UserCard user={m} />
-          </Link>
+          <UserCard user={m} key={i} />
         ))}
       </Box>
     </>

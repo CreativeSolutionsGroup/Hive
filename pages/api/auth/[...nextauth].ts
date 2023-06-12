@@ -1,13 +1,14 @@
-import NextAuth, { AuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
+import NextAuth, { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import { exit } from "process";
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 
 if (
   process.env.GOOGLE_CLIENT_ID == null ||
   process.env.GOOGLE_CLIENT_SECRET == null
-) exit(1);
+)
+  exit(1);
 
 declare module "next-auth" {
   interface Session {
@@ -28,25 +29,28 @@ export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
-    })
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
   callbacks: {
     async signIn({ user: { email } }) {
       return !!prisma.user.count({
         where: {
-          email
-        }
+          email,
+        },
       });
     },
-    async redirect({ baseUrl, url }) {
-      return "/profile";
+    async redirect() {
+      return "/";
     },
     async jwt({ token, user }) {
-      const member = await prisma.user.findFirst({ where: { email: token.email }, include: { group: { include: { users: true } } } });
+      const member = await prisma.user.findFirst({
+        where: { email: token.email },
+        include: { group: { include: { users: true } } },
+      });
 
       token.groupId = member?.stingGroupId ?? "";
 
@@ -60,7 +64,7 @@ export const authOptions: AuthOptions = {
       session.accessibleUsers = token.accessibleUsers;
 
       return session;
-    }
-  }
-}
-export default NextAuth(authOptions)
+    },
+  },
+};
+export default NextAuth(authOptions);
