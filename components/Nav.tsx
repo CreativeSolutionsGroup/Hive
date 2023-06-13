@@ -15,6 +15,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import welcomeHome from "@/assets/welcome-home.png"
 import honeycomb from "@/assets/honeycomb.png";
 
 export default function Nav() {
@@ -34,7 +35,11 @@ export default function Nav() {
   return (
     <AppBar>
       <Toolbar sx={{ height: "2rem" }}>
+        <Box>
+          <Image src={welcomeHome.src} alt="Welcome Home" height={50} width={100} />
+        </Box>
         <Box ml="auto">
+
           <IconButton size="medium" onClick={handleClick}>
             <Avatar>
               <Image
