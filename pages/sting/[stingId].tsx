@@ -42,7 +42,7 @@ export default function Sting({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <Typography variant="h4" component="h1">
+      <Typography fontWeight={"800"} variant="h4" component="h1">
         {stingGroup?.id}
       </Typography>
       <Box mt={3}>

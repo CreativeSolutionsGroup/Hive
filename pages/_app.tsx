@@ -11,20 +11,13 @@ export const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#015289",
+      main: "rgb(0, 82, 136)",
     },
     secondary: {
-      main: "#fdb813",
+      main: "rgb(253, 185, 19)",
     },
   },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        colorPrimary: {
-          backgroundColor: "#003865",
-        },
-      },
-    },
   },
 });
 

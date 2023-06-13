@@ -8,6 +8,14 @@ import Image from "next/image";
 import { useState } from "react";
 import useUserSocials from "@/hooks/useUserSocials";
 import { useSession } from "next-auth/react";
+import { SocialType } from "@prisma/client";
+
+const socialToHref: { [key in SocialType]: string } = {
+  "Instagram": "https://instagram.com/",
+  "Facebook": "https://facebook.com/",
+  "Twitter": "https://twitter.com/",
+  "Tiktok": "https://tiktok.com/"
+}
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
   const { data: session } = useSession();
@@ -20,21 +28,20 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
     <Card
       sx={{
         marginBottom: 2,
-        backgroundColor: "#eee",
-        paddingX: 2,
-        width: {
-          xs: "90%",
-          sm: "400px",
-        },
+        paddingX: 0.1,
+        flex: 1,
+        height: 75,
+        display: "flex",
+        alignItems: "center"
       }}
     >
       <Box
-        sx={{
-          display: "flex",
-        }}
+        display="flex"
+        flexGrow={1}
       >
         <Typography
           variant="subtitle1"
+          fontWeight="bold"
           sx={{
             textDecoration: "none",
             marginX: 2,
@@ -42,6 +49,9 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             color: "black",
             flexGrow: 1,
             flexBasis: 0,
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            overflow: "hidden"
           }}
         >
           {user.name}
@@ -59,8 +69,6 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
                 sx={{
                   backgroundColor: "#0000",
                   marginX: 2,
-                  width: "25px",
-                  height: "25px",
                 }}
                 key={social.id}
               >
@@ -69,11 +77,7 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             ) : (
               <Box key={social.id} my={"auto"} mx={2}>
                 <Link
-                  href={
-                    social.href.includes("http")
-                      ? social.href
-                      : `https://${social.href}`
-                  }
+                  href={`${socialToHref[social.type]}${social.href}`}
                   style={{
                     marginLeft: 2,
                     marginRight: 2,
@@ -83,8 +87,8 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
                     sx={{
                       backgroundColor: "#0000",
                       overflow: "visible",
-                      width: "25px",
-                      height: "25px",
+                      width: "30px",
+                      height: "30px",
                     }}
                   >
                     <Image

@@ -26,7 +26,6 @@ export default function Nav() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const theme = useTheme();
 
   const { data: session } = useSession();
 
@@ -35,17 +34,6 @@ export default function Nav() {
   return (
     <AppBar>
       <Toolbar sx={{ height: "2rem" }}>
-        <Image
-          alt="honeycomb design"
-          src={honeycomb.src}
-          fill
-          style={{ objectFit: "contain", objectPosition: "0% 50%", zIndex: -1 }}
-        />
-        <Link href={"/"} style={{ textDecoration: "none" }}>
-          <Typography variant="h4" sx={{ color: "#fcb716" }} fontWeight={800}>
-            Hive
-          </Typography>
-        </Link>
         <Box ml="auto">
           <IconButton size="medium" onClick={handleClick}>
             <Avatar>
