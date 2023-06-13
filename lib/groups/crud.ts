@@ -6,6 +6,9 @@ export const getStingGroup = async (id: string) => {
     include: {
       users: {
         include: { socialMedia: true },
+        orderBy: {
+          leader: "desc"
+        }
       },
     },
   });
