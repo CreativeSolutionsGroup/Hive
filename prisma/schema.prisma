@@ -49,6 +49,7 @@ model User {
   image         String?
   stingGroupId  String?
   redwoodId     String?
+  leader        Boolean     @default(false)
   accounts      Account[]
   sessions      Session[]
   socialMedia   Social[]

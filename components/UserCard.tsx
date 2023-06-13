@@ -4,10 +4,18 @@ import Link from "next/link";
 import facebook from "@/assets/facebook.png";
 import instagram from "@/assets/instagram.png";
 import twitter from "@/assets/twitter.png";
+import gmail from "@/assets/gmail.png";
 import Image from "next/image";
-import { useState } from "react";
 import useUserSocials from "@/hooks/useUserSocials";
 import { useSession } from "next-auth/react";
+import { SocialType } from "@prisma/client";
+
+const socialToHref: { [key in SocialType]: string } = {
+  "Instagram": "https://instagram.com/",
+  "Facebook": "https://facebook.com/",
+  "Twitter": "https://twitter.com/",
+  "Tiktok": "https://tiktok.com/"
+}
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
   const { data: session } = useSession();
@@ -20,47 +28,88 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
     <Card
       sx={{
         marginBottom: 2,
-        backgroundColor: "#eee",
-        paddingX: 2,
-        width: {
-          xs: "90%",
-          sm: "400px",
-        },
+        paddingX: 0.1,
+        flex: 1,
+        display: "flex",
+        alignItems: "center"
       }}
     >
       <Box
-        sx={{
-          display: "flex",
-        }}
+        display="flex"
+        flexGrow={1}
+        my={2}
+        flexDirection="column"
       >
-        <Typography
-          variant="subtitle1"
-          sx={{
-            textDecoration: "none",
-            marginX: 2,
-            marginY: "auto",
-            color: "black",
-            flexGrow: 1,
-            flexBasis: 0,
-          }}
-        >
-          {user.name}
-        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Typography
+            variant="subtitle1"
+            fontWeight="bold"
+            sx={{
+              textDecoration: "none",
+              marginX: 2,
+              marginY: "auto",
+              color: "black",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden"
+            }}
+          >
+            {user.name}
+          </Typography>
+          {user.leader && <Typography
+            variant="subtitle1"
+            fontWeight="bold"
+            sx={{
+              textDecoration: "none",
+              marginX: 2,
+              marginY: "auto",
+              opacity: "50%",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden"
+            }}
+          >
+            STING Leader
+          </Typography> }
+        </Box>
+
         <Box
+          mt={1}
           flexGrow={1}
-          flexBasis={0}
           display={"flex"}
-          flexDirection={"row-reverse"}
           marginRight={3}
         >
+          <Box my="auto" mx={2} >
+            <Link
+              href={`mailto:${session?.user?.email}`}
+            >
+              <Avatar
+                sx={{
+                  backgroundColor: "#0000",
+                  overflow: "visible",
+                  width: "30px",
+                  height: "30px",
+                }}
+              >
+                <Image
+                  alt="social logo"
+                  src={
+                    gmail.src
+                  }
+                  fill
+                  style={{
+                    objectFit: "contain",
+                  }}
+                />
+              </Avatar>
+            </Link>
+          </Box>
+
           {socials.map((social, i) =>
             social.href.length === 0 ? (
               <Avatar
                 sx={{
                   backgroundColor: "#0000",
-                  marginX: 2,
-                  width: "25px",
-                  height: "25px",
                 }}
                 key={social.id}
               >
@@ -69,22 +118,14 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             ) : (
               <Box key={social.id} my={"auto"} mx={2}>
                 <Link
-                  href={
-                    social.href.includes("http")
-                      ? social.href
-                      : `https://${social.href}`
-                  }
-                  style={{
-                    marginLeft: 2,
-                    marginRight: 2,
-                  }}
+                  href={`${socialToHref[social.type]}${social.href}`}
                 >
                   <Avatar
                     sx={{
                       backgroundColor: "#0000",
                       overflow: "visible",
-                      width: "25px",
-                      height: "25px",
+                      width: "30px",
+                      height: "30px",
                     }}
                   >
                     <Image
@@ -93,8 +134,8 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
                         social.type === "Facebook"
                           ? facebook.src
                           : social.type === "Instagram"
-                          ? instagram.src
-                          : twitter.src
+                            ? instagram.src
+                            : twitter.src
                       }
                       fill
                       style={{
