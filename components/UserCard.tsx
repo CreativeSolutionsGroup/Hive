@@ -1,9 +1,9 @@
 import { UserWithSocials } from "@/types/user";
 import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
 import Link from "next/link";
-import facebook from "@/assets/facebook.png";
-import instagram from "@/assets/instagram.png";
-import twitter from "@/assets/twitter.png";
+import facebook from "@/assets/socials/CU Social Icon_facebook_color.svg";
+import instagram from "@/assets/socials/CU Social Icon_Instagram_color.svg";
+import twitter from "@/assets/socials/CU Social Icon_Twitter_color.svg";
 import gmail from "@/assets/gmail.png";
 import Image from "next/image";
 import useUserSocials from "@/hooks/useUserSocials";
