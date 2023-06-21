@@ -1,5 +1,5 @@
 import { UserWithSocials } from "@/types/user";
-import { Card, CardContent, Typography, Box, Avatar } from "@mui/material";
+import { Card, Typography, Box, Avatar } from "@mui/material";
 import Link from "next/link";
 import facebook from "@/assets/socials/CU Social Icon_facebook_color.svg";
 import instagram from "@/assets/socials/CU Social Icon_Instagram_color.svg";
@@ -19,10 +19,13 @@ const socialToHref: { [key in SocialType]: string } = {
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
   const { data: session } = useSession();
-  const [socials] =
-    session?.user && session.user.email == user.email
-      ? useUserSocials(user.socialMedia)
-      : [user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))];
+  const [user_socials] = useUserSocials(user.socialMedia);
+
+  if (session?.user == null) return <></>;
+
+  let socials_data = session.user.email === user.email 
+    ? user_socials 
+    : user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))
 
   return (
     <Card
@@ -70,7 +73,7 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             }}
           >
             STING Leader
-          </Typography> }
+          </Typography>}
         </Box>
 
         <Box
@@ -105,7 +108,7 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             </Link>
           </Box>
 
-          {socials.map((social, i) =>
+          {socials_data.map((social, i) =>
             social.href.length === 0 ? (
               <Avatar
                 sx={{

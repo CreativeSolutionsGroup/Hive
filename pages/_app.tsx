@@ -31,6 +31,7 @@ export default function App({
         <UserSocialProvider>
           <CssBaseline />
           <RootLayout>
+            {/* @ts-ignore */}
             <Component {...pageProps} />
           </RootLayout>
         </UserSocialProvider>
