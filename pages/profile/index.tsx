@@ -60,6 +60,7 @@ export async function getServerSideProps({
                   { href: "", type: SocialType.Instagram },
                   { href: "", type: SocialType.Twitter },
                   { href: "", type: SocialType.Facebook },
+                  { href: "", type: SocialType.Tiktok },
                 ],
               },
             },
@@ -82,7 +83,7 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [socials, setSocial] = useUserSocials(user.socialMedia);
+  const [socials, setSocial] = useUserSocials(user?.socialMedia ?? []);
   const [success, setSuccess] = useState(false);
 
   /**
