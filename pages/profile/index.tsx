@@ -83,8 +83,11 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
   const [socials, setSocial] = useUserSocials(user?.socialMedia ?? []);
   const [success, setSuccess] = useState(false);
+
+  if (user == null) return <></>;
 
   /**
    * Loops through each social media and saves it.
