@@ -2,6 +2,7 @@ import { UserWithSocials } from "@/types/user";
 import { Card, Typography, Box, Avatar } from "@mui/material";
 import Link from "next/link";
 import facebook from "@/assets/socials/CU Social Icon_facebook_color.svg";
+import tiktok from "@/assets/socials/CU Social Icon_TikTok_color.svg";
 import instagram from "@/assets/socials/CU Social Icon_Instagram_color.svg";
 import twitter from "@/assets/socials/CU Social Icon_Twitter_color.svg";
 import gmail from "@/assets/gmail.png";
@@ -138,7 +139,9 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
                           ? facebook.src
                           : social.type === "Instagram"
                             ? instagram.src
-                            : twitter.src
+                            : social.type === "Twitter" ?
+                              twitter.src :
+                              tiktok.src
                       }
                       fill
                       style={{
