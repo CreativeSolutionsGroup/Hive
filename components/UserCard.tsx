@@ -15,7 +15,7 @@ const socialToHref: { [key in SocialType]: string } = {
   "Instagram": "https://instagram.com/",
   "Facebook": "https://facebook.com/",
   "Twitter": "https://twitter.com/",
-  "Tiktok": "https://tiktok.com/"
+  "Tiktok": "https://tiktok.com/@"
 }
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
