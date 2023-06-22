@@ -28,7 +28,7 @@ export async function getServerSideProps({
   const session = await getServerSession(req, res, authOptions);
   const user = await prisma.user.findUnique({
     where: {
-      email: session!.user!.email!,
+      email: session?.user?.email ?? ""
     },
     include: {
       socialMedia: true,
@@ -51,7 +51,7 @@ export default function Profile({
   const [socials, setSocial] = useUserSocials(user?.socialMedia ?? []);
   const [success, setSuccess] = useState(false);
 
-  if (user == null) return <></>;
+  if (user == null) return window.location.reload();
 
   /**
    * Loops through each social media and saves it.
