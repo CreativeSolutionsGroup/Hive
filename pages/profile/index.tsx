@@ -41,7 +41,7 @@ export async function getServerSideProps({
       where: { email: user.email ?? "" },
     });
     if (!userMetadata)
-      return { redirect: { destination: "/", permanent: false } };
+      return { redirect: { destination: "/403", permanent: false } };
 
     return {
       props: {
