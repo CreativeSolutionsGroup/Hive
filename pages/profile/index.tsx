@@ -34,44 +34,8 @@ export async function getServerSideProps({
       socialMedia: true,
     },
   });
+
   if (user == null) return { redirect: { destination: "/", permanent: false } };
-
-  if (!user.stingGroupId) {
-    const userMetadata = await prisma.studentMetadata.findFirst({
-      where: { email: user.email ?? "" },
-    });
-    if (!userMetadata)
-      return { redirect: { destination: "/403", permanent: false } };
-
-    return {
-      props: {
-        user: await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            group: {
-              connect: {
-                // We assume that sting group ID is not null for any of the students
-                id: userMetadata.stingGroupId!,
-              },
-            },
-            socialMedia: {
-              createMany: {
-                data: [
-                  { href: "", type: SocialType.Instagram },
-                  { href: "", type: SocialType.Twitter },
-                  { href: "", type: SocialType.Facebook },
-                  { href: "", type: SocialType.Tiktok },
-                ],
-              },
-            },
-          },
-          include: {
-            socialMedia: true,
-          },
-        }),
-      },
-    };
-  }
 
   return {
     props: {
