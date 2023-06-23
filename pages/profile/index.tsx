@@ -28,7 +28,7 @@ export async function getServerSideProps({
   const session = await getServerSession(req, res, authOptions);
   const user = await prisma.user.findUnique({
     where: {
-      email: session?.user?.email ?? ""
+      email: session?.user?.email ?? "",
     },
     include: {
       socialMedia: true,
@@ -36,6 +36,43 @@ export async function getServerSideProps({
   });
 
   if (user == null) return { redirect: { destination: "/", permanent: false } };
+
+  if (!user.stingGroupId) {
+    const userMetadata = await prisma.studentMetadata.findFirst({
+      where: { email: user.email ?? "" },
+    });
+    if (!userMetadata)
+      return { redirect: { destination: "/403", permanent: false } };
+
+    return {
+      props: {
+        user: await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            group: {
+              connect: {
+                // We assume that sting group ID is not null for any of the students
+                id: userMetadata.stingGroupId!,
+              },
+            },
+            socialMedia: {
+              createMany: {
+                data: [
+                  { href: "", type: SocialType.Instagram },
+                  { href: "", type: SocialType.Twitter },
+                  { href: "", type: SocialType.Facebook },
+                  { href: "", type: SocialType.Tiktok },
+                ],
+              },
+            },
+          },
+          include: {
+            socialMedia: true,
+          },
+        }),
+      },
+    };
+  }
 
   return {
     props: {
@@ -47,7 +84,6 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-
   const [socials, setSocial] = useUserSocials(user?.socialMedia ?? []);
   const [success, setSuccess] = useState(false);
 
@@ -62,13 +98,13 @@ export default function Profile({
       await Promise.all(
         socials.map(
           async (s, i) =>
-            (await fetch(`/api/social/${s.id}`, {
+            await fetch(`/api/social/${s.id}`, {
               method: "PUT",
               body: JSON.stringify(s),
               headers: {
                 "content-type": "application/json",
               },
-            }))
+            })
         )
       );
       setSuccess(true);
