@@ -60,6 +60,7 @@ model StudentMetadata {
   id           String  @id @default(cuid())
   stingGroupId String?
   email        String
+  name         String
 }
 
 model VerificationToken {

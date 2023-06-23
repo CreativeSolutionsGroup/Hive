@@ -49,6 +49,7 @@ export async function getServerSideProps({
         user: await prisma.user.update({
           where: { id: user.id },
           data: {
+            name: userMetadata.name,
             group: {
               connect: {
                 // We assume that sting group ID is not null for any of the students
