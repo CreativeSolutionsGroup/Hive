@@ -6,8 +6,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 
 if (
-  process.env.GOOGLE_CLIENT_ID == null ||
-  process.env.GOOGLE_CLIENT_SECRET == null ||
   process.env.MS_CLIENT_ID == null ||
   process.env.MS_CLIENT_SECRET == null
 )
@@ -30,10 +28,6 @@ declare module "next-auth/jwt" {
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
     AzureADProvider({
       clientId: process.env.MS_CLIENT_ID,
       clientSecret: process.env.MS_CLIENT_SECRET,
