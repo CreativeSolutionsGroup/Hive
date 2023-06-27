@@ -20,8 +20,6 @@ const socialToHref: { [key in SocialType]: string } = {
 };
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
-  const [userSocials] = useState(user.socialMedia);
-
   return (
     <Card
       sx={{
@@ -91,7 +89,7 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             </Link>
           </Box>
 
-          {userSocials.map((social, i) =>
+          {user.socialMedia.map((social, i) =>
             social.href.length === 0 ? (
               <Avatar
                 sx={{

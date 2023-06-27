@@ -1,14 +1,10 @@
 import UserCard from "@/components/UserCard";
 import prisma from "@/lib/prisma";
-import HelpIcon from "@mui/icons-material/Help";
-import CloseIcon from "@mui/icons-material/Close";
 import {
   Alert,
   Box,
   Button,
   Card,
-  IconButton,
-  Modal,
   Snackbar,
   TextField,
   Typography,
@@ -19,7 +15,6 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useState } from "react";
 import { authOptions } from "../api/auth/[...nextauth]";
-import useUserSocials from "@/hooks/useUserSocials";
 
 export async function getServerSideProps({
   req,
@@ -85,7 +80,7 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [socials, setSocial] = useState(user.socialMedia);
+  const [localUser, setUser] = useState(user);
   const [success, setSuccess] = useState(false);
 
   if (user == null) return window.location.reload();
@@ -97,7 +92,7 @@ export default function Profile({
   async function saveUserSocials() {
     try {
       await Promise.all(
-        socials.map(
+        localUser.socialMedia.map(
           async (s, i) =>
             await fetch(`/api/social/${s.id}`, {
               method: "PUT",
@@ -120,15 +115,15 @@ export default function Profile({
    * @param s The href of the social media
    */
   async function updateSocial(i: number, s: string) {
-    const updated = { ...socials[i], href: s } as Social;
+    const updated = { ...localUser.socialMedia[i], href: s } as Social;
 
     const updatedArray = [
-      ...socials.slice(0, i),
+      ...localUser.socialMedia.slice(0, i),
       updated,
-      ...socials.slice(i + 1),
+      ...localUser.socialMedia.slice(i + 1),
     ];
 
-    setSocial(updatedArray);
+    setUser({ ...localUser, socialMedia: updatedArray });
   }
 
   return (
@@ -137,7 +132,7 @@ export default function Profile({
         <Typography mb={5} variant="h4" fontWeight={800}>
           {user.name}
         </Typography>
-        <UserCard user={user} />
+        <UserCard user={localUser} />
         <Card
           sx={{
             padding: "1rem",
@@ -148,7 +143,7 @@ export default function Profile({
               Social Media
             </Typography>
             <Box display={"flex"} flexDirection={"column"}>
-              {socials.map((v, i) => (
+              {localUser.socialMedia.map((v, i) => (
                 <TextField
                   key={i}
                   label={`${v.type} Username`}
