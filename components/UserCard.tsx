@@ -10,6 +10,7 @@ import { SocialType } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const socialToHref: { [key in SocialType]: string } = {
   Instagram: "https://instagram.com/",
@@ -19,14 +20,6 @@ const socialToHref: { [key in SocialType]: string } = {
 };
 
 export default function UserCard({ user }: { user: UserWithSocials }) {
-  const { data: session } = useSession();
-  const [user_socials] =
-    session?.user?.email === user.email
-      ? useUserSocials(user.socialMedia)
-      : [user.socialMedia.sort((a, b) => a.type.localeCompare(b.type))];
-
-  if (session?.user == null) return <></>;
-
   return (
     <Card
       sx={{
@@ -96,7 +89,7 @@ export default function UserCard({ user }: { user: UserWithSocials }) {
             </Link>
           </Box>
 
-          {user_socials.map((social, i) =>
+          {user.socialMedia.map((social, i) =>
             social.href.length === 0 ? (
               <Avatar
                 sx={{
