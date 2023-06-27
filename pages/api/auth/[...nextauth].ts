@@ -1,14 +1,10 @@
+import prisma from "@/lib/prisma";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import { exit } from "process";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import prisma from "@/lib/prisma";
 
-if (
-  process.env.MS_CLIENT_ID == null ||
-  process.env.MS_CLIENT_SECRET == null
-)
+if (process.env.MS_CLIENT_ID == null || process.env.MS_CLIENT_SECRET == null)
   exit(1);
 
 declare module "next-auth" {
@@ -36,6 +32,9 @@ export const authOptions: AuthOptions = {
   ],
   session: {
     strategy: "jwt",
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
   callbacks: {
     async signIn({ user: { email } }) {

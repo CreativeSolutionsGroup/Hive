@@ -1,7 +1,6 @@
 import welcomeHome from "@/assets/welcome-home.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import {
   AppBar,
   Avatar,
@@ -12,7 +11,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -83,14 +82,6 @@ export default function Nav() {
           >
             <LogoutIcon sx={{ mr: 2, color: "#fdb813" }} />
             <Typography color={"#003865"}>Log out</Typography>
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              signIn();
-            }}
-          >
-            <PersonAddIcon sx={{ mr: 2, color: "#fdb813" }} />
-            <Typography color={"#003865"}>Add account</Typography>
           </MenuItem>
         </Menu>
       </Toolbar>
