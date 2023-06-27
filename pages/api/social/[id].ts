@@ -4,6 +4,7 @@ import { Social } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { revalidate } from "@/lib/revalidate";
 
 export default async function SocialHandler(
   req: NextApiRequest,
