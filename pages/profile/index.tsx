@@ -85,7 +85,7 @@ export async function getServerSideProps({
 export default function Profile({
   user,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [socials, setSocial] = useUserSocials(user?.socialMedia ?? []);
+  const [socials, setSocial] = useState(user.socialMedia);
   const [success, setSuccess] = useState(false);
 
   if (user == null) return window.location.reload();
@@ -122,7 +122,13 @@ export default function Profile({
   async function updateSocial(i: number, s: string) {
     const updated = { ...socials[i], href: s } as Social;
 
-    setSocial(updated, i);
+    const updatedArray = [
+      ...socials.slice(0, i),
+      updated,
+      ...socials.slice(i + 1),
+    ];
+
+    setSocial(updatedArray);
   }
 
   return (
