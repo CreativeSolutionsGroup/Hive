@@ -1,7 +1,7 @@
 import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
-export const config = { matcher: ["/:path*"] };
+export const config = { matcher: ["/((?!auth/signin).*)"] };
 
 export default withAuth(
   function middleware(req: NextRequestWithAuth) {

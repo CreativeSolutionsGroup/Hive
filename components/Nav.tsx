@@ -1,3 +1,4 @@
+import welcomeHome from "@/assets/welcome-home.png";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import {
@@ -9,14 +10,11 @@ import {
   MenuItem,
   Toolbar,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import welcomeHome from "@/assets/welcome-home.png"
-import honeycomb from "@/assets/honeycomb.png";
 
 export default function Nav() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -36,10 +34,14 @@ export default function Nav() {
     <AppBar>
       <Toolbar sx={{ height: "2rem" }}>
         <Box>
-          <Image src={welcomeHome.src} alt="Welcome Home" height={50} width={100} />
+          <Image
+            src={welcomeHome.src}
+            alt="Welcome Home"
+            height={50}
+            width={100}
+          />
         </Box>
         <Box ml="auto">
-
           <IconButton size="medium" onClick={handleClick}>
             <Avatar>
               <Image
