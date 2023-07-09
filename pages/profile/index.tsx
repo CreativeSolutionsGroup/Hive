@@ -137,13 +137,16 @@ export default function Profile({
             </Typography>
             <Box display={"flex"} flexDirection={"column"}>
               {localUser.socialMedia.map((v, i) => (
-                <TextField
-                  key={i}
-                  label={`${v.type} Username`}
-                  value={v.href}
-                  onChange={(e) => updateSocial(i, e.target.value)}
-                  sx={{ margin: 1 }}
-                />
+                <Tooltip arrow
+                  title="Please enter only your username, and not your full name.">
+                  <TextField
+                    key={i}
+                    label={`${v.type} Username`}
+                    value={v.href}
+                    onChange={(e) => updateSocial(i, e.target.value)}
+                    sx={{ margin: 1 }}
+                  />
+                </Tooltip>
               ))}
               <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between">
                 <Tooltip arrow
