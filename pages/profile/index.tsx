@@ -1,20 +1,13 @@
 import UserCard from "@/components/UserCard";
 import prisma from "@/lib/prisma";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  Snackbar,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Button, Card, Snackbar, TextField, Tooltip, Typography, Zoom } from "@mui/material";
 import { Social, SocialType } from "@prisma/client";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { useState } from "react";
 import { authOptions } from "../api/auth/[...nextauth]";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export async function getServerSideProps({
   req,
@@ -144,21 +137,36 @@ export default function Profile({
             </Typography>
             <Box display={"flex"} flexDirection={"column"}>
               {localUser.socialMedia.map((v, i) => (
-                <TextField
-                  key={i}
-                  label={`${v.type} Username`}
-                  value={v.href}
-                  onChange={(e) => updateSocial(i, e.target.value)}
-                  sx={{ margin: 1 }}
-                />
+                <Tooltip arrow
+                  title="Please enter only your username, and not your full name.">
+                  <TextField
+                    key={i}
+                    label={`${v.type} Username`}
+                    value={v.href}
+                    onChange={(e) => updateSocial(i, e.target.value)}
+                    sx={{ margin: 1 }}
+                  />
+                </Tooltip>
               ))}
-              <Button
-                onClick={saveUserSocials}
-                sx={{ width: "150px", margin: 1, marginLeft: "auto" }}
-                variant="contained"
-              >
-                Save
-              </Button>
+              <Box display="flex" flexDirection="row" width="100%" justifyContent="space-between">
+                <Tooltip arrow
+                  placement="right" 
+                  TransitionComponent={Zoom}
+                  title="Link your socials by inputting your username for each media platform. Click save. 
+                         Click on the icon(s) below your name to confirm your profile is linked."
+                >
+                  <Button>
+                    <HelpOutlineIcon sx={{ fontSize: "30px" }} />
+                  </Button>
+                </Tooltip>
+                <Button 
+                  onClick={saveUserSocials} 
+                  sx={{ width: "150px", margin: 1, marginLeft: "auto" }} 
+                  variant="contained"
+                >
+                  Save
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Card>
